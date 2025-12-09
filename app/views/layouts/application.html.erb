@@ -74,7 +74,9 @@
             <% end %>
 
           <% else %>
-            <%= link_to "Login", new_user_session_path, class: "bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition shadow-lg hover:shadow-blue-500/20" %>
+            <% unless current_page?(new_user_session_path) %>
+              <%= link_to "Login", new_user_session_path, class: "bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition shadow-lg hover:shadow-blue-500/20" %>
+            <% end %>
           <% end %>
         </div>
       </div>
