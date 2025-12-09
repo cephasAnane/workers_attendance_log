@@ -7,12 +7,12 @@ hr_dept = Department.find_or_create_by!(name: 'HR', description: 'Human Recource
 # Create an Admin User
 
 puts "Creating Admin User..."
-admin = User.find_or_create_by!(email: 'admin@example.com') do |u|
-    u.password = 'password123'
-    u.password_confirmation = 'password123'
-    u.full_name = 'System Administrator'
+admin = User.find_or_create_by!(email: 'cephas@administrator.com') do |u|
+    u.password = 'Kc02579@.'
+    u.password_confirmation = 'Kc02579@.'
+    u.full_name = 'Cephas Anane'
     u.role = :admin
-    u.department = it_dept
+    u.department = hr_dept
 end
 
-puts "Seed finished! You can login with: admin@example.com / password123"
+puts "Seed finished! You can login with: cephas@administrator.com / Kc02579@."

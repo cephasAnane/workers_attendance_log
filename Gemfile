@@ -79,3 +79,4 @@ gem 'csv'
 gem 'prawn'
 gem 'prawn-table'
 gem 'paper_trail'
+gem 'whenever', require: false
