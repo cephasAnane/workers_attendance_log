@@ -1,0 +1,37 @@
+<div class="max-w-md mx-auto bg-gray-800 p-8 border border-gray-700 shadow-lg rounded-lg mt-10">
+  <h2 class="text-2xl font-bold mb-6 text-white">Request Time Off</h2>
+
+  <%= form_with(model: @leave_request, local: true, class: "space-y-4") do |f| %>
+    <% if @leave_request.errors.any? %>
+      <div class="bg-red-900 text-red-200 p-3 rounded text-sm border border-red-700">
+        <%= @leave_request.errors.full_messages.join(", ") %>
+      </div>
+    <% end %>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :start_date, class: "block text-sm font-medium text-gray-300" %>
+        <%= f.date_field :start_date, class: "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:ring-blue-500" %>
+      </div>
+      <div>
+        <%= f.label :end_date, class: "block text-sm font-medium text-gray-300" %>
+        <%= f.date_field :end_date, class: "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:ring-blue-500" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :leave_type, class: "block text-sm font-medium text-gray-300" %>
+      <%= f.select :leave_type, LeaveRequest.leave_types.keys.map { |k| [k.humanize, k] }, {}, class: "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:ring-blue-500" %>
+    </div>
+
+    <div>
+      <%= f.label :reason, class: "block text-sm font-medium text-gray-300" %>
+      <%= f.text_area :reason, rows: 3, class: "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:ring-blue-500", placeholder: "Why do you need time off?" %>
+    </div>
+
+    <div class="pt-4">
+      <%= f.submit "Submit Request", class: "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded transition cursor-pointer" %>
+      <%= link_to "Cancel", leave_requests_path, class: "block text-center mt-3 text-gray-400 hover:text-gray-200 text-sm" %>
+    </div>
+  <% end %>
+</div>

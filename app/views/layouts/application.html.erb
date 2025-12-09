@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WorkersAttendanceLog</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    
+    <%= javascript_importmap_tags %>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body class="bg-gray-900 font-sans leading-normal tracking-normal text-gray-300">
+
+  <nav class="bg-gray-950 border-b border-gray-800 text-white p-4 shadow-lg sticky top-0 z-50">
+      <div class="container mx-auto flex justify-between items-center">
+        
+        <%= link_to root_path, class: "flex items-center gap-2 group text-decoration-none" do %>
+          <div class="bg-blue-600 text-white p-1.5 rounded-lg group-hover:bg-blue-500 transition shadow-blue-500/50">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <span class="text-xl font-bold tracking-wider text-gray-100 group-hover:text-blue-400 transition">AttendanceLog</span>
+        <% end %>
+        
+        <div class="flex items-center gap-6"> 
+          <% if user_signed_in? %>
+
+            <% if current_user.admin? %>
+              <%= link_to admin_dashboard_path, class: "flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-3 md:px-4 py-2 rounded-full text-sm font-medium transition shadow-md border border-purple-500 hover:-translate-y-0.5" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                </svg>
+                <span class="hidden md:inline">Admin Panel</span>
+              <% end %>
+              
+              <div class="hidden md:block h-6 w-px bg-gray-700"></div>
+            <% end %>
+
+            <%= link_to payments_path, class: "flex items-center gap-2 text-gray-300 hover:text-white transition mr-2 md:mr-4 group" do %>
+              <div class="bg-gray-800 p-1.5 rounded-full hover:bg-gray-700 border border-gray-700 group-hover:border-green-500 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <span class="text-sm font-medium hidden md:inline">My Pay</span>
+            <% end %>
+
+           <%= link_to edit_user_registration_path, class: "flex items-center gap-2 group" do %>
+              
+              <div class="text-right leading-tight">
+                <div class="text-xs md:text-sm font-semibold text-gray-200 group-hover:text-white transition">
+                  <%= current_user.full_name %>
+                </div>
+                <div class="text-[9px] md:text-[10px] text-gray-500 uppercase font-bold tracking-wider">
+                  <%= current_user.role %>
+                </div>
+              </div>
+              
+              <div class="relative">
+                <%= image_tag current_user.avatar_thumbnail, class: "w-9 h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-gray-600 group-hover:border-blue-500 transition" %>
+                <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-gray-900 bg-green-500"></span>
+              </div>
+            <% end %>
+            
+            <%= button_to destroy_user_session_path, method: :delete, class: "text-gray-400 hover:text-red-400 transition p-2 rounded-full hover:bg-gray-800 ml-2 group", title: "Logout", form: {style: "display:inline-block;"} do %>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:scale-110 transition">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+              </svg>
+            <% end %>
+
+          <% else %>
+            <%= link_to "Login", new_user_session_path, class: "bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition shadow-lg hover:shadow-blue-500/20" %>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+  
+    <div class="container mx-auto mt-4 px-4">
+      <% if notice %>
+        <div class="bg-green-900 border-l-4 border-green-500 text-green-200 p-4 mb-4" role="alert">
+          <p><%= notice %></p>
+        </div>
+      <% end %>
+      <% if alert %>
+        <div class="bg-red-900 border-l-4 border-red-500 text-red-200 p-4 mb-4" role="alert">
+          <p><%= alert %></p>
+        </div>
+      <% end %>
+    </div>
+  
+    <main class="container mx-auto px-4 pb-12">
+      <%= yield %>
+    </main>
+  
+  </body>
+</html>

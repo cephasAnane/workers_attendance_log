@@ -1,0 +1,12 @@
+<h1>Payment Received</h1>
+<p>Hello <%= @user.full_name %>,</p>
+<p>A payment has been processed for your account.</p>
+
+<div style="background: #f0f0f0; padding: 20px; border-radius: 5px;">
+  <h2>Amount: $<%= @payment.amount %></h2>
+  <p><strong>Date:</strong> <%= @payment.payment_date %></p>
+  <p><strong>Note:</strong> <%= @payment.note %></p>
+</div>
+
+<p>You can download your payslip from your portal.</p>
+<p><%= link_to "View My Pay", payments_url %></p>

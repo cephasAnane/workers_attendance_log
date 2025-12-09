@@ -1,0 +1,148 @@
+<div class="container mx-auto px-4 py-8">
+  
+  <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+    <h2 class="text-2xl font-bold text-white">Payroll Management</h2>
+    
+    <div class="flex flex-wrap justify-center gap-1">
+      <% (1..12).each do |m| %>
+        <%= link_to Date::MONTHNAMES[m], admin_payments_path(month: m, year: @year), 
+            class: "px-3 py-1 rounded text-xs font-medium transition #{m == @month ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mb-10 animate-fade-in-down">
+    <div class="flex items-center gap-2 mb-4">
+      <div class="bg-yellow-900/30 p-2 rounded-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+      </div>
+      <h3 class="text-xl font-bold text-yellow-500">
+        Pending Advance Requests (<%= @pending_requests&.count || 0 %>)
+      </h3>
+    </div>
+    
+    <div class="bg-gray-800 shadow-xl rounded-xl overflow-hidden border border-yellow-600/50 relative">
+      <div class="absolute top-0 left-0 w-1 h-full bg-yellow-500"></div>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-700">
+          <thead class="bg-gray-900/50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase whitespace-nowrap">Employee</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase whitespace-nowrap">Date</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase whitespace-nowrap">Amount</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase whitespace-nowrap">Reason</th>
+              <th class="px-6 py-3 text-center text-xs font-bold text-gray-400 uppercase whitespace-nowrap">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-700">
+            <% if @pending_requests.present? %>
+              <% @pending_requests.each do |req| %>
+                <tr class="hover:bg-gray-700/50 transition">
+                  <td class="px-6 py-4 text-white font-medium whitespace-nowrap"><%= req.user.full_name %></td>
+                  <td class="px-6 py-4 text-gray-400 text-sm whitespace-nowrap"><%= req.created_at.strftime("%b %d, %I:%M %p") %></td>
+                  <td class="px-6 py-4 text-yellow-400 font-bold whitespace-nowrap text-lg">$<%= req.amount %></td>
+                  <td class="px-6 py-4 text-gray-300 text-sm italic min-w-[200px]"><%= req.reason %></td>
+                  <td class="px-6 py-4 text-center whitespace-nowrap">
+                    <div class="flex justify-center gap-3">
+                      <%= button_to update_request_admin_payment_path(req), method: :patch, params: { status: 'approved' }, class: "flex items-center gap-1 bg-green-600 hover:bg-green-500 text-white px-4 py-1.5 rounded-full text-xs font-bold transition shadow hover:-translate-y-0.5 cursor-pointer", data: { turbo_confirm: "Approve $#{req.amount}?" } do %>
+                        Approve
+                      <% end %>
+                      
+                      <%= button_to update_request_admin_payment_path(req), method: :patch, params: { status: 'rejected' }, class: "flex items-center gap-1 bg-red-600 hover:bg-red-500 text-white px-4 py-1.5 rounded-full text-xs font-bold transition shadow hover:-translate-y-0.5 cursor-pointer", data: { turbo_confirm: "Reject request?" } do %>
+                        Reject
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-gray-500 italic">
+                  No pending requests found. (Count: <%= PaymentRequest.count %> total in DB)
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-gray-800 shadow-lg rounded-lg overflow-hidden border border-gray-700">
+    <div class="bg-gray-900 px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+      <span class="text-gray-400 text-sm">Viewing Payroll for: <strong class="text-white"><%= Date::MONTHNAMES[@month] %> <%= @year %></strong></span>
+      <span class="text-gray-500 text-xs text-right ml-4 md:hidden">Swipe table &rarr;</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-700">
+        <thead class="bg-gray-900">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase whitespace-nowrap">Employee</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase whitespace-nowrap">Hourly Rate</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase whitespace-nowrap">Total Hours</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase whitespace-nowrap">Est. Salary</th>
+            <th class="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase whitespace-nowrap">Status / Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-700">
+          <% @users.each do |user| %>
+            <% hours = user.hours_worked_in(@month, @year) %>
+            <% salary = user.estimated_salary_for(@month, @year) %>
+            <% existing_payment = @payments.find_by(user_id: user.id) %>
+
+            <tr class="hover:bg-gray-700 transition">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-white"><%= user.full_name %></div>
+                <div class="text-xs text-gray-500"><%= user.department&.name || "No Dept" %></div>
+              </td>
+
+              <td class="px-6 py-4 text-gray-300 text-sm whitespace-nowrap">
+                <% if user.hourly_rate && user.hourly_rate > 0 %>
+                  $<%= user.hourly_rate %>/hr
+                <% else %>
+                  <span class="text-red-400 text-xs font-bold bg-red-900/30 px-2 py-1 rounded">Rate Missing</span>
+                  <div class="text-[10px] text-gray-500 mt-1">Edit user to set</div>
+                <% end %>
+              </td>
+
+              <td class="px-6 py-4 text-gray-300 text-sm font-bold whitespace-nowrap">
+                <%= hours %> hrs
+              </td>
+
+              <td class="px-6 py-4 text-green-400 text-sm font-bold whitespace-nowrap">
+                $<%= salary %>
+              </td>
+
+              <td class="px-6 py-4 text-center whitespace-nowrap">
+                <% if existing_payment %>
+                  <div class="flex flex-col items-center">
+                    <span class="bg-green-900 text-green-200 border border-green-700 px-3 py-1 rounded-full text-xs font-bold mb-1">
+                      Paid
+                    </span>
+                    <span class="text-[10px] text-gray-500"><%= existing_payment.payment_date.strftime("%b %d") %></span>
+                  </div>
+                <% else %>
+                  <% if user.hourly_rate && user.hourly_rate > 0 %>
+                    <%= form_with model: [:admin, Payment.new], url: admin_payments_path, local: true do |f| %>
+                      <%= f.hidden_field :user_id, value: user.id %>
+                      <%= f.hidden_field :amount, value: salary %>
+                      <%= f.hidden_field :month, value: "#{@month}/#{@year}" %>
+                      
+                      <%= f.submit "Pay $#{salary}", 
+                          class: "bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded text-xs font-bold shadow transition cursor-pointer hover:-translate-y-0.5",
+                          data: { turbo_confirm: "Confirm payment of $#{salary} to #{user.full_name}?" } %>
+                    <% end %>
+                  <% else %>
+                    <span class="text-gray-600 text-xs cursor-not-allowed">Set rate to pay</span>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

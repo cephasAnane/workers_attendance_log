@@ -1,0 +1,10 @@
+<h1>Leave Request Update</h1>
+<p>Hello <%= @user.full_name %>,</p>
+<p>Your request for <strong><%= @leave_request.leave_type %></strong> 
+   (<%= @leave_request.start_date %> to <%= @leave_request.end_date %>) has been:</p>
+
+<h2 style="color: <%= @leave_request.approved? ? 'green' : 'red' %>;">
+  <%= @leave_request.status.upcase %>
+</h2>
+
+<p>Login to view details.</p>

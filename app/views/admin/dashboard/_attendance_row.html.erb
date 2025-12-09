@@ -1,0 +1,27 @@
+<tr id="<%= dom_id(record) %>" class="hover:bg-gray-700 transition">
+  <td class="px-6 py-4">
+    <div class="text-sm font-medium text-white"><%= record.user.full_name %></div>
+    <div class="text-sm text-gray-500"><%= record.user.email %></div>
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400"><%= record.check_in.strftime("%Y-%m-%d") %></td>
+  <td class="px-6 py-4 whitespace-nowrap text-green-400 font-medium"><%= record.check_in.strftime("%H:%M") %></td>
+  <td class="px-6 py-4 whitespace-nowrap">
+    <% if record.check_out %>
+      <span class="text-red-400 font-medium"><%= record.check_out.strftime("%H:%M") %></span>
+    <% else %>
+      <span class="bg-green-900 text-green-200 text-xs font-semibold px-2 py-1 rounded-full animate-pulse border border-green-700">Active</span>
+    <% end %>
+  </td>
+  <td class="px-6 py-4 text-sm text-gray-500"><%= record.ip_address || "N/A" %></td>
+  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+    <% if record.latitude && record.longitude %>
+      <%= link_to "View Map", "https://www.google.com/maps/search/?api=1&query=#{record.latitude},#{record.longitude}", target: "_blank", class: "text-blue-400 hover:text-blue-300 underline" %>
+    <% else %>
+      <span class="text-gray-600">Unknown</span>
+    <% end %>
+  </td>
+  <td class="px-6 py-4 text-center">
+    <%= link_to "Edit", edit_admin_attendance_path(record), class: "text-blue-400 hover:text-blue-300 font-medium text-sm mr-2" %>
+    <%= link_to "Delete", admin_attendance_path(record), data: { turbo_method: :delete, turbo_confirm: "Delete this record permanently?" }, class: "text-red-400 hover:text-red-300 font-medium text-sm" %>
+  </td>
+</tr>
