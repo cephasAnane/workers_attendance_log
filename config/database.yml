@@ -85,22 +85,19 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
   primary: &primary_production
     <<: *default
-    database: workers_attendance_log_production
-    username: workers_attendance_log
-    password: <%= ENV["WORKERS_ATTENDANCE_LOG_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: workers_attendance_log_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: workers_attendance_log_production_queue
-    migrations_paths: db/queue_migrate
+    url: <%= ENV['DATABASE_URL'] %>
+  
+  # Tell Solid Cable to use the primary DB
   cable:
     <<: *primary_production
-    database: workers_attendance_log_production_cable
-    migrations_paths: db/cable_migrate
+  
+  # Tell Solid Queue to use the primary DB
+  queue:
+    <<: *primary_production
+  
+  # Tell Solid Cache to use the primary DB
+  cache:
+    <<: *primary_production
+ 
