@@ -2,17 +2,17 @@ require "test_helper"
 
 class PaymentsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
-    get payments_index_url
+    get payments_url
     assert_response :success
   end
 
   test "should get new" do
-    get payments_new_url
+    get new_payments_url
     assert_response :success
   end
 
   test "should get create" do
-    get payments_create_url
+    post payments_url
     assert_response :success
   end
 end

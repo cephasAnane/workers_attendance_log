@@ -14,10 +14,26 @@
       <% end %>
 
       <div class="mb-5">
+        <%= f.label :full_name, class: "block text-gray-300 text-sm font-semibold mb-2" %>
+        <%= f.text_field :full_name, autofocus: true,
+            class: "w-full px-4 py-3 bg-gray-900 border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition",
+            placeholder: "Dan Zoe" %>
+      </div>
+
+      <div class="mb-5">
         <%= f.label :email, class: "block text-gray-300 text-sm font-semibold mb-2" %>
         <%= f.email_field :email, autofocus: true, autocomplete: "email", 
             class: "w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-200", 
             placeholder: "name@company.com" %>
+      </div>
+
+      <div class="mb-5">
+        <%= f.label :department_id, "Department", class: "block text-gray-300 text-sm font-semibold mb-2" %>
+        
+        <%= f.collection_select :department_id, Department.all, :id, :name, 
+            { prompt: "Select your Department" }, 
+            { class: "w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-200" } 
+        %>
       </div>
 
       <div class="mb-5">
